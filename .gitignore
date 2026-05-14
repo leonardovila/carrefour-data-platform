@@ -1,0 +1,23 @@
+venv/
+.venv/
+__pycache__/
+*.egg-info/
+build/
+dist/
+*.pyc
+*.tar.gz
+
+# Datos locales del lake (S3 es la fuente de verdad)
+data/
+logs/
+*.parquet
+
+# Charles capture (no commitear, puede tener cookies)
+charles_archivos/
+internal_documentation/
+infra/
+raw_responses_reference/
+
+# Outputs viejos de POC
+carrefour_raw_*.json
+carrefour_category_map.json

@@ -1,0 +1,407 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LABORATORIO DE GONDOLA — Design System (Frutiger Aero edition)
+   Carrefour AR · Leonardo Vila
+   Concept: laboratorio luminoso. Cielo brillante, vidrio resplandeciente,
+   verde lima radiante, dorado solar, aqua cristalino. Optimismo techy.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* ── Bases del cielo ── */
+  --color-void: #ecfdff;             /* fondo base, casi blanco con tinte aqua */
+  --color-sky-1: #e0f2fe;            /* azul muy claro */
+  --color-sky-2: #c4ecff;            /* azul mid */
+  --color-sky-3: #7dd3fc;            /* azul vibrante */
+
+  /* ── Vidrio (paneles glassmorphism) ── */
+  --color-pit: rgba(255, 255, 255, 0.55);     /* panel base translúcido */
+  --color-bench: rgba(255, 255, 255, 0.78);   /* panel hover */
+  --color-glass: rgba(255, 255, 255, 0.65);
+  --color-glass-edge: rgba(255, 255, 255, 0.95);
+
+  /* ── Lineas y grids ── */
+  --color-grid: rgba(132, 204, 22, 0.2);
+  --color-grid-soft: rgba(125, 211, 252, 0.18);
+
+  /* ── Acentos del laboratorio luminoso ── */
+  --color-radio: #84cc16;            /* verde lima brillante (acento principal) */
+  --color-radio-soft: #d9f99d;       /* lima pastel para halos */
+  --color-radio-deep: #65a30d;       /* lima oscuro para contrastes */
+  --color-radio-glow: #bef264;
+
+  --color-plasma: #f59e0b;           /* dorado solar */
+  --color-plasma-soft: #fde68a;
+  --color-plasma-deep: #d97706;
+  --color-plasma-glow: #fbbf24;
+
+  --color-arc: #06b6d4;              /* aqua eléctrico */
+  --color-arc-soft: #a5f3fc;
+  --color-arc-deep: #0891b2;
+  --color-arc-glow: #67e8f9;
+
+  --color-warn: #f59e0b;             /* alerta = dorado */
+  --color-blood: #f43f5e;            /* alerta dura, rosado-rojo */
+  --color-carrefour: #ee2122;        /* color identificable de la marca propia (su color reconocible) */
+
+  /* ── Texto ── */
+  --color-paper: #0f172a;            /* texto principal: navy oscuro legible */
+  --color-paper-soft: #1e293b;
+  --color-mute: #475569;             /* texto opaco */
+  --color-faint: #94a3b8;
+
+  /* ── Fonts ── */
+  --font-display: "Space Grotesk", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Roboto Mono", ui-monospace, monospace;
+  --font-instrument: "VT323", "JetBrains Mono", monospace;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { color-scheme: light; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 96px; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-display);
+  background: var(--color-void);
+  color: var(--color-paper);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  min-height: 100vh;
+  /* Cielo radiante de fondo: gradiente celeste arriba que muere en blanco abajo,
+     más halos circulares de oro, lima y aqua que dan la vibra Frutiger Aero */
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(125, 211, 252, 0.55), transparent 70%),
+    radial-gradient(ellipse 70% 50% at 85% 10%, rgba(190, 242, 100, 0.5), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(251, 191, 36, 0.18), transparent 80%),
+    radial-gradient(ellipse 80% 50% at 100% 80%, rgba(103, 232, 249, 0.4), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 0% 100%, rgba(217, 249, 157, 0.45), transparent 70%),
+    linear-gradient(180deg, #e0f2fe 0%, #f0fdff 35%, #ffffff 70%, #ecfccb 100%);
+  background-attachment: fixed;
+}
+
+/* Burbujas grandes flotando como decoración del aire (capa fixed). */
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    radial-gradient(circle 6px at 12% 80%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 70%),
+    radial-gradient(circle 4px at 78% 64%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 70%),
+    radial-gradient(circle 8px at 35% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 70%),
+    radial-gradient(circle 5px at 92% 22%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 70%),
+    radial-gradient(circle 7px at 55% 90%, rgba(190, 242, 100, 0.4), rgba(255, 255, 255, 0) 70%),
+    radial-gradient(circle 5px at 8% 45%, rgba(125, 211, 252, 0.5), rgba(255, 255, 255, 0) 70%),
+    radial-gradient(circle 6px at 65% 12%, rgba(251, 191, 36, 0.45), rgba(255, 255, 255, 0) 70%);
+  animation: bubbleDrift 24s ease-in-out infinite alternate;
+}
+
+/* Resplandor sutil encima de todo, capa de luz */
+body::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.25), transparent 70%);
+  mix-blend-mode: soft-light;
+}
+
+/* ───────── Tipografia helpers ───────── */
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); }
+.font-instrument { font-family: var(--font-instrument); }
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* ───────── SHINE / GLOW (renombre de "neon" → ahora son brillos limpios) ───────── */
+.neon-green {
+  color: var(--color-radio-deep);
+  text-shadow:
+    0 0 1px #fff,
+    0 1px 2px rgba(101, 163, 13, 0.15),
+    0 0 18px rgba(190, 242, 100, 0.5);
+}
+.neon-cyan {
+  color: var(--color-arc-deep);
+  text-shadow:
+    0 0 1px #fff,
+    0 1px 2px rgba(8, 145, 178, 0.15),
+    0 0 18px rgba(103, 232, 249, 0.5);
+}
+.neon-plasma {
+  color: var(--color-plasma-deep);
+  text-shadow:
+    0 0 1px #fff,
+    0 1px 2px rgba(217, 119, 6, 0.15),
+    0 0 18px rgba(251, 191, 36, 0.55);
+}
+.neon-warn {
+  color: var(--color-plasma-deep);
+  text-shadow: 0 0 1px #fff, 0 1px 2px rgba(217, 119, 6, 0.2);
+}
+.neon-blood {
+  color: var(--color-carrefour);
+  text-shadow: 0 0 1px #fff, 0 1px 2px rgba(238, 33, 34, 0.25);
+}
+
+/* ───────── PANEL DE VIDRIO (glassmorphism resplandeciente) ───────── */
+.lab-panel {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.55) 100%);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 22px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(132, 204, 22, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.9),
+    0 12px 32px rgba(14, 165, 233, 0.15),
+    0 24px 60px rgba(132, 204, 22, 0.1);
+}
+.lab-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, transparent 25%);
+}
+
+.lab-panel-glow {
+  border-color: rgba(190, 242, 100, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 0 0 1px rgba(190, 242, 100, 0.4),
+    0 0 32px rgba(190, 242, 100, 0.45),
+    0 0 64px rgba(125, 211, 252, 0.35),
+    0 12px 32px rgba(14, 165, 233, 0.2);
+}
+
+/* Cinta dorada (era amarilla peligro, ahora dorado solar) */
+.lab-tape {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #422006;
+  background: linear-gradient(135deg, var(--color-plasma-soft) 0%, var(--color-plasma-glow) 50%, var(--color-plasma) 100%);
+  padding: 4px 10px;
+  border-radius: 999px;
+  display: inline-block;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 0 rgba(255, 255, 255, 0.8),
+    0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+/* Cursor blink tipo terminal */
+.lab-cursor::after {
+  content: "▊";
+  margin-left: 4px;
+  color: var(--color-radio-deep);
+  animation: cursorBlink 1s steps(2, start) infinite;
+}
+
+/* ───────── Animaciones ───────── */
+@keyframes cursorBlink {
+  to { opacity: 0; }
+}
+
+@keyframes bubbleDrift {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(20px, -30px, 0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.6) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3.5s linear infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 12px rgba(190, 242, 100, 0.55),
+      0 0 28px rgba(190, 242, 100, 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 22px rgba(190, 242, 100, 0.85),
+      0 0 56px rgba(190, 242, 100, 0.45);
+  }
+}
+.animate-pulse-glow {
+  animation: pulseGlow 2.4s ease-in-out infinite;
+}
+
+@keyframes spinSlow {
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow { animation: spinSlow 8s linear infinite; }
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-ticker { animation: ticker 50s linear infinite; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fadeUp 0.5s ease-out backwards; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float { animation: float 4s ease-in-out infinite; }
+
+@keyframes haloPulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.06); }
+}
+
+/* ───────── Scrollbar resplandeciente ───────── */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.5); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-radio-glow), var(--color-arc-glow));
+  border-radius: 5px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, var(--color-radio), var(--color-arc)); }
+
+/* ───────── Selection ───────── */
+::selection {
+  background: var(--color-radio-glow);
+  color: var(--color-paper);
+}
+
+/* ───────── Util ───────── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+.glass {
+  background: var(--color-glass);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--color-glass-edge);
+}
+
+.text-shadow-soft {
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+/* HUD frame: corner brackets en lima brillante */
+.hud-frame {
+  position: relative;
+}
+.hud-frame::before,
+.hud-frame::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--color-radio);
+  filter: drop-shadow(0 0 4px rgba(132, 204, 22, 0.6));
+}
+.hud-frame::before {
+  top: -1px; left: -1px;
+  border-top: 2px solid var(--color-radio);
+  border-left: 2px solid var(--color-radio);
+  border-top-left-radius: 8px;
+}
+.hud-frame::after {
+  bottom: -1px; right: -1px;
+  border-bottom: 2px solid var(--color-plasma);
+  border-right: 2px solid var(--color-plasma);
+  border-bottom-right-radius: 8px;
+}
+
+/* Banda decorativa Frutiger: cinta verde-aqua que cruza algo */
+.aero-band {
+  background: linear-gradient(90deg, var(--color-radio-glow) 0%, var(--color-arc-glow) 50%, var(--color-radio-glow) 100%);
+  height: 4px;
+  border-radius: 999px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 2px 12px rgba(132, 204, 22, 0.4);
+}
+
+/* Botón principal Aero: vidrio bombé con glow */
+.aero-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-paper);
+  background: linear-gradient(180deg, #ffffff 0%, var(--color-radio-soft) 100%);
+  border: 1px solid var(--color-radio-glow);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 200ms ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -2px 0 rgba(132, 204, 22, 0.25),
+    0 6px 18px rgba(132, 204, 22, 0.35),
+    0 12px 28px rgba(125, 211, 252, 0.25);
+}
+.aero-btn:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -2px 0 rgba(132, 204, 22, 0.3),
+    0 10px 24px rgba(132, 204, 22, 0.5),
+    0 16px 36px rgba(125, 211, 252, 0.35);
+}
+.aero-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Pill dorada para badges secundarios */
+.gold-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #422006;
+  background: linear-gradient(180deg, var(--color-plasma-soft) 0%, var(--color-plasma-glow) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 999px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 4px 12px rgba(245, 158, 11, 0.35);
+}
