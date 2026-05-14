@@ -6,31 +6,34 @@ import BlueprintBadge from "../lab/BlueprintBadge";
 import Centrifuge from "../lab/Centrifuge";
 import ScopeGrid from "../lab/ScopeGrid";
 import HCarousel from "../lab/HCarousel";
+import { useI18n } from "../../i18n";
 
 export default function OfertasSection() {
   const { refreshSeed } = useDashboardStore();
   const { data, loading, error } = useApi<CloudResponse<OfertaRow>>(`/cloud/ofertas-del-dia?limit=24&_=${refreshSeed}`);
   const rows = data?.rows ?? [];
+  const { t } = useI18n();
 
   return (
     <section id="ofertas" className="relative px-4 sm:px-6 md:px-12 py-12 sm:py-16 md:py-24 overflow-hidden">
       <ScopeGrid />
       <div className="relative max-w-7xl mx-auto">
         <BlueprintBadge
-          experiment="EXPERIMENTO N°02"
-          title="Las mejores ofertas del día"
+          experiment={t("of.experiment")}
+          title={t("of.title")}
           subtitle={
             <>
-              Filtramos los productos con descuento real <strong>≥ 15%</strong> respecto al precio de lista. No promos turbias —
-              ahorro contante y sonante.
+              {t("of.subtitle").split("{strong}")[0]}
+              <strong>≥ 15%</strong>
+              {t("of.subtitle").split("{strong}")[1]}
             </>
           }
-          status="DESCUENTO ≥ 15%"
+          status={t("of.status")}
           statusColor="#f59e0b"
         />
 
         {error && <div className="lab-panel p-6 font-mono text-sm neon-blood">⚠ Error: {error}</div>}
-        {loading && rows.length === 0 && <Centrifuge label="Detectando ofertas" />}
+        {loading && rows.length === 0 && <Centrifuge label={t("of.loading")} />}
 
         {rows.length > 0 && (() => {
           const renderCard = (p: OfertaRow, i: number) => {
@@ -47,7 +50,6 @@ export default function OfertasSection() {
                   className="group relative lab-panel overflow-hidden hover:lab-panel-glow transition-all duration-300 animate-fade-up h-full flex flex-col"
                   style={{ animationDelay: `${i * 30}ms` }}
                 >
-                  {/* Discount badge */}
                   <div
                     className="absolute top-3 right-3 z-10 px-2.5 py-1 font-mono text-xs font-bold tracking-wider rounded-full border border-white"
                     style={{
@@ -59,7 +61,6 @@ export default function OfertasSection() {
                     -{Math.round(desc)}%
                   </div>
 
-                  {/* Imagen sobre fondo blanco con halo brillante */}
                   <div className="aspect-square w-full bg-white relative overflow-hidden rounded-t-[22px]">
                     {p.imagen ? (
                       <img
@@ -70,10 +71,9 @@ export default function OfertasSection() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-[var(--color-faint)] font-mono text-xs">
-                        sin imagen
+                        {t("of.noImage")}
                       </div>
                     )}
-                    {/* Halo lateral resplandeciente en hover */}
                     <div
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition pointer-events-none"
                       style={{
@@ -82,7 +82,6 @@ export default function OfertasSection() {
                     />
                   </div>
 
-                  {/* Body */}
                   <div className="p-5 flex flex-col gap-2">
                     <div className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--color-mute)]">
                       {p.marca || "—"} · {p.categoria || "—"}
@@ -104,11 +103,11 @@ export default function OfertasSection() {
                         className="font-mono text-[12px] mt-1.5 font-semibold"
                         style={{ color: ringColor }}
                       >
-                        te ahorrás <strong>{money(p.te_ahorras_ars)}</strong>
+                        {t("of.youSave")} <strong>{money(p.te_ahorras_ars)}</strong>
                       </div>
                       {p.cuotas_max && parseInt(p.cuotas_max) > 1 && (
                         <div className="font-mono text-[12px] text-[var(--color-mute)] mt-1">
-                          o {p.cuotas_max} cuotas de {money(p.valor_cuota)}
+                          {t("of.installments").replace("{n}", p.cuotas_max).replace("{v}", money(p.valor_cuota))}
                         </div>
                       )}
                     </div>
@@ -118,13 +117,11 @@ export default function OfertasSection() {
           };
           return (
             <>
-              {/* Mobile / tablet: scroll horizontal con flechas */}
               <div className="md:hidden">
                 <HCarousel itemWidth="80%">
                   {rows.map((p, i) => renderCard(p, i))}
                 </HCarousel>
               </div>
-              {/* Desktop: grid completa */}
               <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {rows.map((p, i) => renderCard(p, i))}
               </div>
@@ -134,13 +131,13 @@ export default function OfertasSection() {
 
         {data && rows.length === 0 && !loading && (
           <div className="lab-panel p-12 font-mono text-center text-[var(--color-mute)]">
-            No detectamos ofertas significativas hoy. <span className="lab-cursor"></span>
+            {t("of.noDeals")} <span className="lab-cursor"></span>
           </div>
         )}
 
         {rows.length > 0 && (
           <div className="mt-6 font-mono text-[10px] text-[var(--color-faint)]">
-            // mostrando {rows.length} muestras · ordenadas por % descuento desc · view: {data!.view}
+            // {t("of.showing").replace("{n}", String(rows.length)).replace("{v}", data!.view)}
           </div>
         )}
       </div>

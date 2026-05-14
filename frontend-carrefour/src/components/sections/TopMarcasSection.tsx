@@ -6,11 +6,13 @@ import BlueprintBadge from "../lab/BlueprintBadge";
 import Centrifuge from "../lab/Centrifuge";
 import ScopeGrid from "../lab/ScopeGrid";
 import BarPill from "../lab/BarPill";
+import { useI18n } from "../../i18n";
 
 export default function TopMarcasSection() {
   const { refreshSeed } = useDashboardStore();
   const { data, loading, error } = useApi<CloudResponse<TopMarcaRow>>(`/cloud/top-marcas?limit=15&_=${refreshSeed}`);
   const rows = data?.rows ?? [];
+  const { t } = useI18n();
 
   const max = rows.reduce((m, r) => Math.max(m, intStr(r.productos)), 0);
 
@@ -19,20 +21,21 @@ export default function TopMarcasSection() {
       <ScopeGrid />
       <div className="relative max-w-7xl mx-auto">
         <BlueprintBadge
-          experiment="EXPERIMENTO N°03"
-          title="Centrífuga de marcas"
+          experiment={t("tm.experiment")}
+          title={t("tm.title")}
           subtitle={
             <>
-              Las <strong>15 marcas</strong> con más SKUs en góndola hoy. Mirar dónde están las marcas propias de Carrefour
-              dentro del ranking dice mucho del posicionamiento del super.
+              {t("tm.subtitle").split("{strong}")[0]}
+              <strong>{t("tm.subtitleStrong")}</strong>
+              {t("tm.subtitle").split("{strong}")[1]}
             </>
           }
-          status="RANKING VIVO"
+          status={t("tm.status")}
           statusColor="#06b6d4"
         />
 
         {error && <div className="lab-panel p-6 font-mono text-sm neon-blood">⚠ Error: {error}</div>}
-        {loading && rows.length === 0 && <Centrifuge label="Centrifugando marcas" />}
+        {loading && rows.length === 0 && <Centrifuge label={t("tm.loading")} />}
 
         {rows.length > 0 && (
           <div className="lab-panel hud-frame overflow-hidden">
@@ -40,14 +43,14 @@ export default function TopMarcasSection() {
               <table className="w-full text-base font-mono">
                 <thead>
                   <tr className="text-[var(--color-mute)] text-[12px] font-bold uppercase tracking-[0.18em]">
-                    <th className="px-4 py-3 text-left">#</th>
-                    <th className="px-4 py-3 text-left">Marca</th>
-                    <th className="px-4 py-3 text-right">Productos</th>
-                    <th className="px-4 py-3 text-left hidden md:table-cell">Distribución</th>
-                    <th className="px-4 py-3 text-right hidden lg:table-cell">Cats</th>
-                    <th className="px-4 py-3 text-right hidden lg:table-cell">$ promedio</th>
-                    <th className="px-4 py-3 text-right hidden md:table-cell">En oferta</th>
-                    <th className="px-4 py-3 text-right hidden md:table-cell">Desc. avg</th>
+                    <th className="px-4 py-3 text-left">{t("tm.rank")}</th>
+                    <th className="px-4 py-3 text-left">{t("tm.brand")}</th>
+                    <th className="px-4 py-3 text-right">{t("tm.products")}</th>
+                    <th className="px-4 py-3 text-left hidden md:table-cell">{t("tm.distribution")}</th>
+                    <th className="px-4 py-3 text-right hidden lg:table-cell">{t("tm.cats")}</th>
+                    <th className="px-4 py-3 text-right hidden lg:table-cell">{t("tm.avgPrice")}</th>
+                    <th className="px-4 py-3 text-right hidden md:table-cell">{t("tm.onSale")}</th>
+                    <th className="px-4 py-3 text-right hidden md:table-cell">{t("tm.avgDiscount")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -71,7 +74,7 @@ export default function TopMarcasSection() {
                             </span>
                             {isCarrefour && (
                               <span className="font-mono text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border border-[var(--color-carrefour)] text-[var(--color-carrefour)]">
-                                marca propia
+                                {t("tm.privateLabel")}
                               </span>
                             )}
                           </div>
@@ -112,7 +115,7 @@ export default function TopMarcasSection() {
 
         {rows.length > 0 && (
           <div className="mt-6 font-mono text-[12px] text-[var(--color-mute)]">
-            // resaltado en rojo: la marca propia del super · view: {data!.view}
+            // {t("tm.footer").replace("{v}", data!.view)}
           </div>
         )}
       </div>

@@ -6,41 +6,40 @@ import BlueprintBadge from "../lab/BlueprintBadge";
 import Centrifuge from "../lab/Centrifuge";
 import ScopeGrid from "../lab/ScopeGrid";
 import HCarousel from "../lab/HCarousel";
+import { useI18n } from "../../i18n";
 
-/**
- * El experimento estrella. Marca propia vs líder, lado a lado.
- * Cada fila es un duelo visual para que sea compartible.
- */
 export default function CarrefourVsLiderSection() {
   const { refreshSeed } = useDashboardStore();
   const { data, loading, error } = useApi<CloudResponse<CarrefourVsLiderRow>>(
     `/cloud/carrefour-vs-lider?limit=12&_=${refreshSeed}`
   );
   const rows = data?.rows ?? [];
+  const { t } = useI18n();
 
   return (
     <section id="vs-lider" className="relative px-4 sm:px-6 md:px-12 py-12 sm:py-16 md:py-24 overflow-hidden">
       <ScopeGrid />
       <div className="relative max-w-7xl mx-auto">
         <BlueprintBadge
-          experiment="EXPERIMENTO N°04 · ESTRELLA"
+          experiment={t("vs.experiment")}
           title={
             <>
-              <span className="neon-blood">Marca Carrefour</span> vs <span className="neon-cyan">marca líder</span>
+              <span className="neon-blood">Marca Carrefour</span> vs <span className="neon-cyan">{t("vs.leadingBrand")}</span>
             </>
           }
           subtitle={
             <>
-              Por cada categoría, tomamos el producto Carrefour más barato disponible y lo comparamos contra el
-              producto más barato de la competencia. <strong>Cuánto te ahorrás yendo por la marca propia.</strong>
+              {t("vs.subtitle").split("{strong}")[0]}
+              <strong>{t("vs.subtitleStrong")}</strong>
+              {t("vs.subtitle").split("{strong}")[1]}
             </>
           }
-          status="DUELO POR CATEGORÍA"
+          status={t("vs.status")}
           statusColor="#ee2122"
         />
 
         {error && <div className="lab-panel p-6 font-mono text-sm neon-blood">⚠ Error: {error}</div>}
-        {loading && rows.length === 0 && <Centrifuge label="Comparando muestras" />}
+        {loading && rows.length === 0 && <Centrifuge label={t("vs.loading")} />}
 
         {rows.length > 0 && (() => {
           const renderRow = (r: typeof rows[number], i: number) => {
@@ -68,12 +67,12 @@ export default function CarrefourVsLiderSection() {
                       />
                     ) : (
                       <div className="w-20 h-20 bg-[var(--color-bench)] grid place-items-center shrink-0 font-mono text-[9px] text-[var(--color-faint)]">
-                        sin foto
+                        {t("vs.noPhoto")}
                       </div>
                     )}
                     <div className="flex flex-col min-w-0">
                       <div className="font-mono text-[10px] uppercase tracking-[0.2em] neon-blood">
-                        marca carrefour
+                        {t("vs.carrefourBrand")}
                       </div>
                       <div className="font-display text-sm font-medium leading-snug mt-1 line-clamp-2">
                         {r.producto_carrefour}
@@ -85,7 +84,7 @@ export default function CarrefourVsLiderSection() {
                     </div>
                   </a>
 
-                  {/* CENTRO: Diferencia (oro radiante) */}
+                  {/* CENTRO: Diferencia */}
                   <div
                     className="flex flex-col items-center justify-center px-6 py-4 md:py-6 relative"
                     style={{
@@ -96,7 +95,7 @@ export default function CarrefourVsLiderSection() {
                     }}
                   >
                     <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--color-mute)]">
-                      Te ahorrás
+                      {t("vs.youSave")}
                     </div>
                     <div className="font-instrument text-5xl md:text-6xl tabular leading-none neon-plasma my-2 text-shadow-soft">
                       {pct(ahorroPct)}
@@ -142,7 +141,7 @@ export default function CarrefourVsLiderSection() {
                       />
                     ) : (
                       <div className="w-20 h-20 bg-[var(--color-bench)] grid place-items-center shrink-0 font-mono text-[9px] text-[var(--color-faint)]">
-                        sin foto
+                        {t("vs.noPhoto")}
                       </div>
                     )}
                     <div className="flex flex-col min-w-0">
@@ -152,7 +151,7 @@ export default function CarrefourVsLiderSection() {
                       <div className="font-display text-sm font-medium leading-snug mt-1 line-clamp-2">
                         {r.producto_competencia}
                       </div>
-                      <div className="font-mono text-[10px] text-[var(--color-mute)] mt-1">marca líder</div>
+                      <div className="font-mono text-[10px] text-[var(--color-mute)] mt-1">{t("vs.leadingBrand")}</div>
                       <div className="font-instrument text-3xl tabular leading-none neon-cyan mt-auto">
                         {money(r.precio_competencia)}
                       </div>
@@ -163,13 +162,11 @@ export default function CarrefourVsLiderSection() {
           };
           return (
             <>
-              {/* Mobile: carousel horizontal — un duelo a la vez */}
               <div className="md:hidden">
                 <HCarousel itemWidth="92%">
                   {rows.map((r, i) => renderRow(r, i))}
                 </HCarousel>
               </div>
-              {/* Desktop: stack vertical clásico */}
               <div className="hidden md:block space-y-4">
                 {rows.map((r, i) => renderRow(r, i))}
               </div>
@@ -179,7 +176,7 @@ export default function CarrefourVsLiderSection() {
 
         {rows.length > 0 && (
           <div className="mt-6 font-mono text-[10px] text-[var(--color-faint)]">
-            // 1 fila por categoría hoja · ordenado por % de ahorro desc · view: {data!.view}
+            // {t("vs.footer").replace("{v}", data!.view)}
           </div>
         )}
       </div>

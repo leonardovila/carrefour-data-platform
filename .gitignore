@@ -6,6 +6,7 @@ build/
 dist/
 *.pyc
 *.tar.gz
+.claude/
 
 # Datos locales del lake (S3 es la fuente de verdad)
 data/

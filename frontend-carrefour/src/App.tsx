@@ -8,6 +8,28 @@ import LoQueBajoSection from "./components/sections/LoQueBajoSection";
 import Pipeline from "./components/sections/Pipeline";
 import Footer from "./components/sections/Footer";
 import NavRail from "./components/sections/NavRail";
+import { useI18n } from "./i18n";
+
+function ErrorFallback({ error }: { error: Error }) {
+  const { t } = useI18n();
+  return (
+    <div className="min-h-screen grid place-items-center p-8">
+      <div className="lab-panel p-8 max-w-xl">
+        <div className="lab-tape mb-3">{t("err.tape")}</div>
+        <h1 className="font-display text-2xl font-bold neon-blood">{t("err.title")}</h1>
+        <pre className="font-mono text-xs text-[var(--color-mute)] mt-3 whitespace-pre-wrap">
+          {String(error)}
+        </pre>
+        <button
+          onClick={() => location.reload()}
+          className="mt-5 px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] border border-[var(--color-radio-deep)] hover:lab-panel-glow transition"
+        >
+          <span className="neon-green">{t("err.restart")}</span>
+        </button>
+      </div>
+    </div>
+  );
+}
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   constructor(props: { children: ReactNode }) {
@@ -23,23 +45,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
   }
   render() {
     if (this.state.error) {
-      return (
-        <div className="min-h-screen grid place-items-center p-8">
-          <div className="lab-panel p-8 max-w-xl">
-            <div className="lab-tape mb-3">⚠ FALLO DEL INSTRUMENTO</div>
-            <h1 className="font-display text-2xl font-bold neon-blood">El laboratorio crasheó</h1>
-            <pre className="font-mono text-xs text-[var(--color-mute)] mt-3 whitespace-pre-wrap">
-              {String(this.state.error)}
-            </pre>
-            <button
-              onClick={() => location.reload()}
-              className="mt-5 px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] border border-[var(--color-radio-deep)] hover:lab-panel-glow transition"
-            >
-              <span className="neon-green">// Reiniciar muestra</span>
-            </button>
-          </div>
-        </div>
-      );
+      return <ErrorFallback error={this.state.error} />;
     }
     return this.props.children;
   }

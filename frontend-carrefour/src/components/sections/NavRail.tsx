@@ -1,19 +1,21 @@
 import { useEffect, useRef, useState } from "react";
+import { useI18n } from "../../i18n";
+import type { TKey } from "../../i18n";
 
-interface Link {
+interface LinkDef {
   id: string;
   num: string;
-  label: string;
+  labelKey: TKey;
   color: "lime" | "aqua" | "gold" | "plum" | "blood";
   hex: string;
 }
-const links: Link[] = [
-  { id: "termometro",  num: "01",  label: "Termómetro",       color: "lime",  hex: "#84cc16" },
-  { id: "ofertas",     num: "02",  label: "Ofertas del día",  color: "gold",  hex: "#f59e0b" },
-  { id: "vs-lider",    num: "03",  label: "Carrefour vs Líder", color: "blood", hex: "#ee2122" },
-  { id: "marcas",      num: "04",  label: "Top marcas",        color: "aqua",  hex: "#06b6d4" },
-  { id: "bajo-semana", num: "05",  label: "Lo que bajó",       color: "plum",  hex: "#a855f7" },
-  { id: "pipeline",    num: "DOC", label: "Pipeline · doc",    color: "aqua",  hex: "#0891b2" },
+const linkDefs: LinkDef[] = [
+  { id: "termometro",  num: "01",  labelKey: "nav.thermometer",  color: "lime",  hex: "#84cc16" },
+  { id: "ofertas",     num: "02",  labelKey: "nav.dealsOfDay",   color: "gold",  hex: "#f59e0b" },
+  { id: "vs-lider",    num: "03",  labelKey: "nav.vsLeader",     color: "blood", hex: "#ee2122" },
+  { id: "marcas",      num: "04",  labelKey: "nav.topBrands",    color: "aqua",  hex: "#06b6d4" },
+  { id: "bajo-semana", num: "05",  labelKey: "nav.priceDrops",   color: "plum",  hex: "#a855f7" },
+  { id: "pipeline",    num: "DOC", labelKey: "nav.pipelineDoc",  color: "aqua",  hex: "#0891b2" },
 ];
 
 function smoothJump(id: string) {
@@ -25,18 +27,14 @@ function smoothJump(id: string) {
   }
 }
 
-/**
- * Navegación con scroll-spy + smooth-scroll:
- * - Desktop (xl+): banda horizontal sticky debajo del hero, botones grandes con paleta Aero.
- * - Mobile / tablet: dropdown fijo abajo. Click → expande lista vertical legible.
- */
 export default function NavRail() {
-  const [active, setActive] = useState<string>(links[0].id);
+  const { t } = useI18n();
+  const [active, setActive] = useState<string>(linkDefs[0].id);
   const [open, setOpen] = useState(false);
   const ddRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const targets = links
+    const targets = linkDefs
       .map((l) => document.getElementById(l.id))
       .filter((el): el is HTMLElement => el !== null);
     if (targets.length === 0) return;
@@ -53,7 +51,6 @@ export default function NavRail() {
     return () => observer.disconnect();
   }, []);
 
-  // Cerrar dropdown mobile al hacer click fuera
   useEffect(() => {
     if (!open) return;
     const onDoc = (e: MouseEvent) => {
@@ -69,11 +66,11 @@ export default function NavRail() {
     setOpen(false);
   };
 
-  const activeLink = links.find((l) => l.id === active) || links[0];
+  const activeLink = linkDefs.find((l) => l.id === active) || linkDefs[0];
 
   return (
     <>
-      {/* ════════ DESKTOP (xl+) — DOCK ALTO sticky, número gigante + label ════════ */}
+      {/* ════════ DESKTOP (xl+) — DOCK ALTO sticky ════════ */}
       <div className="hidden xl:block sticky top-3 z-40 px-6 mt-4 mb-8">
         <nav
           className="max-w-7xl mx-auto p-3 rounded-3xl"
@@ -94,16 +91,17 @@ export default function NavRail() {
                   boxShadow: "0 0 10px rgba(132,204,22,0.85)",
                 }}
               />
-              Navegación del laboratorio
+              {t("nav.labNavigation")}
             </div>
             <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--color-faint)]">
-              {links.length} experimentos · scroll-spy ON
+              {linkDefs.length} {t("nav.experiments")}
             </div>
           </div>
 
           <div className="grid grid-cols-6 gap-3">
-            {links.map((l) => {
+            {linkDefs.map((l) => {
               const isActive = active === l.id;
+              const label = t(l.labelKey);
               return (
                 <a
                   key={l.id}
@@ -142,7 +140,6 @@ export default function NavRail() {
                     }
                   }}
                 >
-                  {/* Halo de color en el fondo */}
                   <div
                     className="absolute -top-8 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full pointer-events-none transition-opacity duration-300"
                     style={{
@@ -152,7 +149,6 @@ export default function NavRail() {
                     }}
                   />
 
-                  {/* Número gigante */}
                   <span
                     className="font-instrument tabular relative leading-none"
                     style={{
@@ -167,7 +163,6 @@ export default function NavRail() {
                     {l.num}
                   </span>
 
-                  {/* Label */}
                   <span
                     className="font-display text-center leading-tight relative whitespace-nowrap"
                     style={{
@@ -177,10 +172,9 @@ export default function NavRail() {
                       letterSpacing: "-0.01em",
                     }}
                   >
-                    {l.label}
+                    {label}
                   </span>
 
-                  {/* Marker de activo */}
                   {isActive && (
                     <span
                       className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded-full"
@@ -201,7 +195,6 @@ export default function NavRail() {
 
       {/* ════════ MOBILE / TABLET (<xl) — dropdown desde abajo ════════ */}
       <div ref={ddRef} className="xl:hidden fixed left-2 right-2 bottom-2 z-40">
-        {/* Panel desplegado · sólido, sin opacidad */}
         {open && (
           <div
             className="mb-2 p-2 animate-fade-up"
@@ -214,11 +207,12 @@ export default function NavRail() {
             }}
           >
             <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--color-mute)] px-3 py-2">
-              Saltar a sección
+              {t("nav.jumpToSection")}
             </div>
             <div className="flex flex-col gap-1">
-              {links.map((l) => {
+              {linkDefs.map((l) => {
                 const isActive = active === l.id;
+                const label = t(l.labelKey);
                 return (
                   <a
                     key={l.id}
@@ -246,7 +240,7 @@ export default function NavRail() {
                         fontWeight: isActive ? 700 : 500,
                       }}
                     >
-                      {l.label}
+                      {label}
                     </span>
                     {isActive && (
                       <span
@@ -264,7 +258,6 @@ export default function NavRail() {
           </div>
         )}
 
-        {/* Trigger principal del dropdown · sólido */}
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
@@ -286,10 +279,10 @@ export default function NavRail() {
           </span>
           <span className="flex flex-col items-start">
             <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--color-mute)]">
-              Sección actual
+              {t("nav.currentSection")}
             </span>
             <span className="font-display text-sm font-bold leading-tight" style={{ color: "var(--color-paper)" }}>
-              {activeLink.label}
+              {t(activeLink.labelKey)}
             </span>
           </span>
           <span

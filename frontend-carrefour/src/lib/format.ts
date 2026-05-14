@@ -45,18 +45,25 @@ export function floatStr(value: string | number | null | undefined): number {
   return Number.isNaN(n) ? 0 : n;
 }
 
-const FECHA_FMT = new Intl.DateTimeFormat("es-AR", {
+const FECHA_FMT_ES = new Intl.DateTimeFormat("es-AR", {
   weekday: "long",
   day: "numeric",
   month: "long",
   year: "numeric",
 });
 
-export function formatFecha(iso: string | null | undefined): string {
+const FECHA_FMT_EN = new Intl.DateTimeFormat("en-US", {
+  weekday: "long",
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+});
+
+export function formatFecha(iso: string | null | undefined, lang: "en" | "es" = "en"): string {
   if (!iso) return "—";
   const d = new Date(iso + (iso.length === 10 ? "T00:00:00" : ""));
   if (Number.isNaN(d.getTime())) return iso;
-  return FECHA_FMT.format(d);
+  return (lang === "en" ? FECHA_FMT_EN : FECHA_FMT_ES).format(d);
 }
 
 // VTEX devuelve `link` como path relativo (ej "/producto-slug/p"). Si lo

@@ -1,10 +1,14 @@
+import { useI18n } from "../../i18n";
+
 export default function Footer() {
+  const { t } = useI18n();
+
   return (
     <footer className="relative border-t border-[var(--color-grid)] mt-12">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 grid md:grid-cols-3 gap-8">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--color-mute)]">
-            Operador del laboratorio
+            {t("ft.labOperator")}
           </div>
           <div className="font-display text-xl font-bold mt-2">
             <span className="neon-green">Leonardo</span> Vila
@@ -24,23 +28,20 @@ export default function Footer() {
 
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--color-mute)]">
-            Frecuencia de muestra
+            {t("ft.sampleFreq")}
           </div>
-          <div className="font-instrument text-2xl neon-cyan mt-2 tabular">03:30 ART · diario</div>
+          <div className="font-instrument text-2xl neon-cyan mt-2 tabular">{t("ft.daily")}</div>
           <div className="font-mono text-xs text-[var(--color-mute)] mt-2 leading-relaxed">
-            El pipeline corre cada noche, después del scraper de Costco para no pisarnos. Cuando vuelvas mañana, hay una
-            partición nueva y los marts temporales se actualizan solos.
+            {t("ft.pipelineDesc")}
           </div>
         </div>
 
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--color-mute)]">
-            Disclaimer
+            {t("ft.disclaimer")}
           </div>
           <div className="font-mono text-xs text-[var(--color-mute)] mt-2 leading-relaxed">
-            Laboratorio personal de inteligencia comercial sobre datos públicos del catálogo online de Carrefour
-            Argentina. Sin afiliación con la empresa. Los precios pueden variar entre la captura nocturna y el momento
-            en que vas al super.
+            {t("ft.disclaimerText")}
           </div>
         </div>
       </div>

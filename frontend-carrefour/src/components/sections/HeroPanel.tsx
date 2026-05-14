@@ -6,6 +6,8 @@ import { compactNumber, formatFecha, intStr, money } from "../../lib/format";
 import PulseCircle from "../lab/PulseCircle";
 import Beaker from "../lab/Beaker";
 import Ticker from "../lab/Ticker";
+import { LangToggle } from "../LangToggle";
+import { useI18n } from "../../i18n";
 
 const RUN_ID = `LAB-${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}${String(
   new Date().getDate()
@@ -15,6 +17,7 @@ export default function HeroPanel() {
   const { refreshSeed } = useDashboardStore();
   const term = useApi<CloudResponse<TermometroRow>>(`/cloud/termometro?_=${refreshSeed}`);
   const [now, setNow] = useState(new Date());
+  const { t, lang } = useI18n();
 
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000);
@@ -31,31 +34,31 @@ export default function HeroPanel() {
   const tickerItems = [
     <>
       <span className="text-[var(--color-radio)]">●</span>
-      <span>VPS DigitalOcean (NYC)</span>
+      <span>{t("hero.tickerB.vps")}</span>
     </>,
     <>
       <span className="text-[var(--color-arc)]">●</span>
-      <span>Bronze layer en S3 us-east-2</span>
+      <span>{t("hero.tickerB.bronze")}</span>
     </>,
     <>
       <span className="text-[var(--color-plasma)]">●</span>
-      <span>Catálogo Carrefour AR</span>
+      <span>{t("hero.tickerB.catalog")}</span>
     </>,
     <>
       <span className="text-[var(--color-warn)]">●</span>
-      <span>Athena workgroup carrefour-wg</span>
+      <span>{t("hero.tickerB.athena")}</span>
     </>,
     <>
       <span className="text-[var(--color-radio)]">●</span>
-      <span>Cron diario @ 03:30 ART</span>
+      <span>{t("hero.tickerB.cron")}</span>
     </>,
     <>
       <span className="text-[var(--color-arc)]">●</span>
-      <span>11 vistas SQL aplicadas</span>
+      <span>{t("hero.tickerB.views")}</span>
     </>,
     <>
       <span className="text-[var(--color-plasma)]">●</span>
-      <span>444 categorías hoja descubiertas</span>
+      <span>{t("hero.tickerB.leafCats")}</span>
     </>,
   ];
 
@@ -74,10 +77,10 @@ export default function HeroPanel() {
       >
         <Ticker
           items={[
-            <span key="1">✦ MUESTRA EN VIVO · CATÁLOGO CARREFOUR ARGENTINA · {formatFecha(r?.fecha)}</span>,
-            <span key="2">✦ {compactNumber(productos)} PRODUCTOS DETECTADOS HOY · {compactNumber(ofertas)} EN OFERTA</span>,
-            <span key="3">✦ AHORRO ACUMULADO DISPONIBLE: {money(ahorroTotal)}</span>,
-            <span key="4">✦ INSTRUMENTAL: PYTHON + DUCKDB + ATHENA · INGESTA: TLS IMPERSONATION + BACKOFF EXPONENCIAL</span>,
+            <span key="1">{t("hero.ticker.liveSample")} · {formatFecha(r?.fecha, lang)}</span>,
+            <span key="2">✦ {compactNumber(productos)} {t("hero.ticker.productsDetected")} · {compactNumber(ofertas)} {t("hero.ticker.onSale")}</span>,
+            <span key="3">{t("hero.ticker.savings")} {money(ahorroTotal)}</span>,
+            <span key="4">{t("hero.ticker.tools")}</span>,
           ]}
           className="font-mono text-[11px] font-bold tracking-wider"
         />
@@ -116,29 +119,30 @@ export default function HeroPanel() {
               <div className="lab-tape">{RUN_ID}</div>
               <div className="gold-pill">
                 <PulseCircle />
-                <span>DATOS EN VIVO</span>
+                <span>{t("hero.liveData")}</span>
               </div>
               <span className="font-mono text-[10px] tabular text-[var(--color-mute)]">
                 {now.toISOString().slice(11, 19)} UTC
               </span>
+              <LangToggle />
             </div>
 
             <h1 className="font-display font-bold leading-[0.95] tracking-tight text-shadow-soft">
               <span className="block text-[var(--color-mute)] text-xl sm:text-2xl md:text-3xl mb-2 sm:mb-3 font-normal">
-                Laboratorio de
+                {t("hero.labOf")}
               </span>
               <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
-                <span className="neon-green">Góndola</span>
+                <span className="neon-green">{t("hero.word1")}</span>
                 <span className="text-[var(--color-faint)] font-mono mx-2 sm:mx-3 text-2xl sm:text-3xl">/</span>
                 <span className="neon-blood">Carrefour</span>
               </span>
               <span className="block font-mono text-sm sm:text-base md:text-lg text-[var(--color-mute)] mt-4 sm:mt-5 tracking-tight">
-                Inteligencia comercial sobre{" "}
+                {t("hero.commercialIntel")}{" "}
                 <span className="text-[var(--color-paper)] font-bold neon-green">{compactNumber(productos)}</span>{" "}
-                productos ·{" "}
+                {t("hero.products")} ·{" "}
                 <span className="text-[var(--color-paper)] font-bold neon-cyan">{compactNumber(marcas)}</span>{" "}
-                marcas activas ·{" "}
-                <span className="text-[var(--color-paper)] font-bold neon-plasma">{cats}</span> categorías de hoy.
+                {t("hero.activeBrands")} ·{" "}
+                <span className="text-[var(--color-paper)] font-bold neon-plasma">{cats}</span> {t("hero.categoriesToday")}
               </span>
             </h1>
 
@@ -147,7 +151,7 @@ export default function HeroPanel() {
                 href="#pipeline"
                 className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-mute)] hover:text-[var(--color-radio-deep)] transition"
               >
-                ¿Cómo se construye? →
+                {t("hero.howBuilt")}
               </a>
               <a
                 href="https://www.leonardovila.com"
@@ -155,7 +159,7 @@ export default function HeroPanel() {
                 rel="noopener"
                 className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-mute)] hover:text-[var(--color-arc-deep)] transition"
               >
-                ← Volver al sitio del operador
+                {t("hero.backToOperator")}
               </a>
             </div>
           </div>
@@ -164,17 +168,17 @@ export default function HeroPanel() {
           <div className="hidden md:flex items-end gap-4">
             <div className="flex flex-col items-center">
               <Beaker level={Math.min(0.95, productos / 25000)} color="#84cc16" size={56} />
-              <span className="font-mono text-[9px] text-[var(--color-mute)] mt-1 uppercase tracking-widest">SKUs</span>
+              <span className="font-mono text-[9px] text-[var(--color-mute)] mt-1 uppercase tracking-widest">{t("hero.skus")}</span>
               <span className="font-instrument neon-green text-xl tabular leading-none">{compactNumber(productos)}</span>
             </div>
             <div className="flex flex-col items-center">
               <Beaker level={Math.min(0.95, marcas / 2500)} color="#06b6d4" size={56} />
-              <span className="font-mono text-[9px] text-[var(--color-mute)] mt-1 uppercase tracking-widest">Marcas</span>
+              <span className="font-mono text-[9px] text-[var(--color-mute)] mt-1 uppercase tracking-widest">{t("hero.brands")}</span>
               <span className="font-instrument neon-cyan text-xl tabular leading-none">{compactNumber(marcas)}</span>
             </div>
             <div className="flex flex-col items-center">
               <Beaker level={Math.min(0.95, ofertas / 5000)} color="#fbbf24" size={56} />
-              <span className="font-mono text-[9px] text-[var(--color-mute)] mt-1 uppercase tracking-widest">Ofertas</span>
+              <span className="font-mono text-[9px] text-[var(--color-mute)] mt-1 uppercase tracking-widest">{t("hero.deals")}</span>
               <span className="font-instrument neon-plasma text-xl tabular leading-none">{compactNumber(ofertas)}</span>
             </div>
           </div>
